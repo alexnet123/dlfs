@@ -59,7 +59,7 @@ patch -Np1 -i ../glibc-2.40-fhs-1.patch
 ```
 
 Пример:
-```bash
+```
 [root@1ab6670ccfbd glibc-2.40]# patch -Np1 -i ../glibc-2.40-fhs-1.patch
 patching file Makeconfig
 Hunk #1 succeeded at 262 (offset 12 lines).
@@ -70,7 +70,6 @@ Hunk #1 succeeded at 21 (offset -1 lines).
 patching file sysdeps/generic/paths.h
 patching file sysdeps/unix/sysv/linux/paths.h
 [root@1ab6670ccfbd glibc-2.40]# 
-
 ```
 
 ### 🔹 3. Создать каталог сборки
@@ -261,14 +260,12 @@ readelf -l a.out | grep ld-linux
 ```
 
 Пример:
-```bash
+```
 [root@1ab6670ccfbd build]#echo 'int main(){}' | $DLFS/tools/bin/$DLFS_TGT-gcc -xc -
 [root@1ab6670ccfbd build]# 
 [root@1ab6670ccfbd build]# readelf -l a.out | grep ld-linux
       [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
 [root@1ab6670ccfbd build]# 
-
-
 ```
 
 ## Очистка
