@@ -48,7 +48,7 @@ Docker использует **слоистую файловую систему**
 
 Docker сам монтирует:
 
-```
+```text
 /proc → proc  
 /sys → sysfs  
 /dev → tmpfs  
@@ -59,10 +59,10 @@ Docker сам монтирует:
 
 ❗ В `chroot` это делается вручную:
 
-```
-mount -t proc proc $LFS/proc
-mount -t sysfs sysfs $LFS/sys
-mount --bind /dev $LFS/dev
+```text
+mount -t proc      proc     $DLFS/proc
+mount -t sysfs     sysfs    $DLFS/sys
+mount -t devtmpfs  devtmpfs $DLFS/dev
 ```
 
 
@@ -70,12 +70,17 @@ mount --bind /dev $LFS/dev
 
 Исторически сложилось, что Linux хранит список примонтированных файловых систем в файле /etc/ mtab . Современные ядра хранят этот список внутри себя и предоставляют его пользователю через файловую систему /proc . Чтобы удовлетворять требованиям утилит, которые ожидают наличия /etc/mtab, в Docker автоматически создается симлинк
 
-```
+```text
 bash-5.2# ls -al /etc/mtab
 lrwxrwxrwx 1 0 0 12 May 18 20:20 /etc/mtab -> /proc/mounts
 bash-5.2# 
 ```
 
+❗ В `chroot` это делается вручную:
+
+```text
+ln -sv /proc/self/mounts /etc/mtab
+```
 
 
 ---
@@ -94,13 +99,13 @@ Docker автоматически создаёт:
 ❗ В `chroot` это делается вручную:
 
 /etc/hostname 
-```
+```text
 bash-5.2# cat /etc/hostname 
 dlfs
 ```
 
 /etc/hosts
-```
+```text
 bash-5.2# cat /etc/hosts
 127.0.0.1	localhost
 ::1	localhost ip6-localhost ip6-loopback
@@ -111,7 +116,7 @@ ff02::2	ip6-allrouters
 ```
 
 /etc/resolv.conf 
-```
+```text
 bash-5.2# cat /etc/resolv.conf 
 nameserver 8.8.8.8
 nameserver 8.8.4.4
@@ -129,41 +134,14 @@ TERM=xterm
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ```
 
----
+❗ В `chroot` это делается вручную:
 
-### 🔧 5. Простота запуска
-
+/etc/environment
+```text
+HOSTNAME=dlfs
+TERM=xterm
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ```
-docker run -it --rm --name dlfs -v ./main/mnt/lfs/sources:/sources dlfs bash
-```
-
-📌 Что вы получаете:
-
-- 🖥️ Автоматический запуск `bash`
-    
-- 🔒 Полную изоляцию
-    
-- 🔄 Смонтированное окружение
-
-
----
-
-## ⚖️ Сравнение с chroot
-
-Запуск через `chroot` требует:
-
-```
-mount -t proc proc $LFS/proc
-mount -t sysfs sysfs $LFS/sys
-mount --bind /dev $LFS/dev
-
-chroot $LFS /tools/bin/env -i \
-    HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' \
-    PATH=/bin:/usr/bin:/sbin:/usr/sbin \
-    /tools/bin/bash --login
-```
-
-📌 В Docker всё это делает **одна** команда.
 
 ---
 
