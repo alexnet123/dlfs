@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Автоматически сгенерированный скрипт из Markdown-файлов в ./doc/2) Доработка образа DLFS/
+# Автоматически сгенерированный скрипт из Markdown-файлов в doc/2) Доработка образа DLFS/1 Настройка системы DLFS/
 
 # ==== Из файла: 1) Использование Docker вместо chroot 🚀.md ====
 
@@ -212,22 +212,9 @@ export USER=root
 export HOME=/root
 cp -a /etc/skel/. /root/
 chown -R root:root /root
-#export MAKE_CMD="taskset -c 12,13,14,15,16,17,18,19,20,21,22,23 make -j12"
+export MAKE_CMD="taskset -c 12,13,14,15,16,17,18,19,20,21,22,23 make -j12"
 # or
 #export MAKE_CMD="make -j$(nproc)"
-export MAKE_CMD="make"
+#export MAKE_CMD="make"
 exec bash --login
-
-# ==== Из файла: 7) Установка Gettext-0.22.5.md ====
-cd /sources/
-tar -xf gettext-0.22.5.tar.xz 
-cd gettext-0.22.5
-mkdir -v build && cd build
-../configure --disable-shared
-bash -c "$MAKE_CMD"
-cp -v gettext-tools/src/{msgfmt,msgmerge,xgettext} /usr/bin
-rm -rf /sources/gettext-0.22.5
-
-# ==== Из файла: 8) Установка Bison-3.8.2.md ====
-rm -rf /sources/bison-3.8.2
 
